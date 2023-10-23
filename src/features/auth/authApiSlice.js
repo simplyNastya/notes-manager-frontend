@@ -1,5 +1,5 @@
-import { apiSlice } from "../../redux/api/api-slice";
-import { logOut } from "./authSlice";
+import { apiSlice } from "../../redux/api/api-slice"
+import { logOut } from "./authSlice"
 
 export const authApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
@@ -17,11 +17,12 @@ export const authApiSlice = apiSlice.injectEndpoints({
             }),
             async onQueryStarted(arg, { dispatch, queryFulfilled }) {
                 try {
-                    //const { data } = 
-                    await queryFulfilled
-                    //console.log(data)
+                    const { data } = await queryFulfilled
+                    console.log(data)
                     dispatch(logOut())
+                    setTimeout(() => {
                     dispatch(apiSlice.util.resetApiState())
+                    }, 1000)
                 } catch (err) {
                     console.log(err)
                 }
@@ -40,4 +41,4 @@ export const {
     useLoginMutation,
     useSendLogoutMutation,
     useRefreshMutation,
-} = authApiSlice
+} = authApiSlice 

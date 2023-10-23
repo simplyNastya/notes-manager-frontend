@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
 import { useDispatch } from "react-redux";
+import usePersist from "../../hooks/usePersist";
 import { setCredentials } from "./authSlice";
 import { useLoginMutation } from "./authApiSlice";
 
@@ -11,6 +12,7 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errMsg, setErrMsg] = useState("");
+  const [persist, setPersist] = usePersist();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -25,10 +27,9 @@ const Login = () => {
     setErrMsg("");
   }, [username, password]);
 
-  const errClass = errMsg ? "errmsg" : "offscreen";
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       const { accessToken } = await login({ username, password }).unwrap();
       dispatch(setCredentials({ accessToken }));
@@ -49,17 +50,13 @@ const Login = () => {
     }
   };
 
-  const handleUserInput = (e) => {
-    setUsername(e.target.value);
-  };
+  const handleUserInput = (e) => setUsername(e.target.value);
+  const handlePwdInput = (e) => setPassword(e.target.value);
+  const handlePersist = () => setPersist((prev) => !prev);
 
-  const handlePwdInput = (e) => {
-    setPassword(e.target.value);
-  };
+  const errClass = errMsg ? "errmsg" : "offscreen";
 
-  if (isLoading) {
-    return <p>Loading...</p>;
-  }
+  if (isLoading) return <p>Loading...</p>;
 
   return (
     <section className="public">
@@ -94,6 +91,17 @@ const Login = () => {
             required
           />
           <button className="form__submit-button">Sign In</button>
+
+          <label htmlFor="persist" className="form__persist">
+            <input
+              type="checkbox"
+              className="form__checkbox"
+              id="persist"
+              onChange={handlePersist}
+              checked={persist}
+            />
+            Trust This Device
+          </label>
         </form>
       </main>
       <footer>
