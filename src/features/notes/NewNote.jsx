@@ -1,10 +1,13 @@
-import { useSelector } from "react-redux";
-import { selectAllUsers } from "../users/usersApiSlice";
 import NewNoteForm from "./NewNoteForm";
 
-const NewNote = () => {
-  const users = useSelector(selectAllUsers);
+import { useGetUsersQuery } from "../users/usersApiSlice";
 
+const NewNote = () => {
+  const { users } = useGetUsersQuery("usersList", {
+    selectFromResult: ({ data }) => ({
+      users: data?.ids.map((id) => data?.entities[id]),
+    }),
+  });
   if (!users?.length) return <p>Not currently available</p>;
 
   return <NewNoteForm users={users} />;
